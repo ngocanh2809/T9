@@ -56,8 +56,10 @@ public class Solution {
 		sc.close();
 	}
 	
-	//Param: a word
-	//Return: total number of key presses to spell the word
+	//Question 1===================================================================
+	//Param: a word (case-insensitive)
+	//Return: Print total number of key presses to spell the word
+	//		  if input contains characters not among [0-9a-zA-Z] ==> unable to spell
 	public static void question1(String input) {
 		int length = input.length();
 		int numKeypress = 0;
@@ -91,6 +93,10 @@ public class Solution {
 		return -1;
 	}
 	
+	//Param: string containing all characters whose number of keypresses
+	//		 is to be included in the lookup table
+	//Return: an array to lookup number of keypresses for each character
+	//		  table[<char value>] = <number of keypresses>
 	private static int[] buildCharToNumkeypressTable(String str) {
 	    int max = -1;
 	    for (char c : str.toCharArray()) {
@@ -109,8 +115,10 @@ public class Solution {
 	    return ch >= CHAR_TO_NUMKEYPRESS_TABLE.length ? -1 : CHAR_TO_NUMKEYPRESS_TABLE[ch];
 }
 	
-	//Param: a word
-	//Return: the number the word could represent
+	//Question 2===================================================================
+	//Param: a word (case-insensitive)
+	//Return: Print the number the word could represent
+	//		  if input contains characters not among [0-9a-zA-Z] ==> unable to represent
 	public static void question2(String input) {
 		int length = input.length();
 		int[] output = new int[length];
@@ -125,6 +133,7 @@ public class Solution {
 	        }
 		}
 		
+		//Display output as in example
 		StringBuilder builder = new StringBuilder();
 		for(int s : output) {
 			builder.append(s);
@@ -132,6 +141,10 @@ public class Solution {
 		System.out.println(builder.toString());
 	}
 	
+	//Param: string containing all characters whose key
+	//		 is to be included in the lookup table
+	//Return: an array to lookup key for each character
+	//		  table[<char value>] = <corresponding key on the keypad>
 	private static int[] buildCharToKeyTable(String str) {
 	    int max = -1;
 	    for (char c : str.toCharArray()) {
@@ -176,8 +189,9 @@ public class Solution {
 	    return -1;
 	}
 	
+	//Question 3===================================================================
 	//Param: a number
-	//Return: all possible letter combinations the number could represent
+	//Return: Print all possible letter combinations the number could represent
 	public static void question3(String input) {
 		ArrayList<String> output = new ArrayList<String>();
 		output.add("");
@@ -200,6 +214,8 @@ public class Solution {
 		System.out.println(output.toString());
 	}
 	
+	//Param: a list of strings
+	//Return: a list of double quoted strings (to display output for parts 3 & 4)
 	private static ArrayList<String> getListDoubleQuotes(ArrayList<String> list) {
 		ArrayList<String> newList = new ArrayList<String>();
 		
@@ -226,9 +242,17 @@ public class Solution {
 		return map;
 	}
 	
+	//Question 4===================================================================
 	//Param: a number
-	//Return: all possible word combinations from Dictionary that the number could represent
+	//Return: Print all possible word combinations from Dictionary that the number could represent
+	//		  case-sensitive 			=> only lowercase words are returned
+	//		  if input contains 0 or 1 	=> print empty string
 	public static void question4(String input) {
+		if (!validateInput(input)) {
+			System.out.println("");
+			return;
+		}
+		
 		ArrayList<String> output = getMatches(input, dictionary);
 		output = getListDoubleQuotes(output);
 		System.out.println(output.toString());
@@ -238,6 +262,9 @@ public class Solution {
 		return getMatchesHelper(input, trie.root, 0);
 	}
 	
+	//Param: input number (as a string), current node, index i
+	//Return: for each number in input, get the corresponding characters
+	//		  and recursively traverse down dictionary to find matches
 	private static ArrayList<String> getMatchesHelper(String input, WordTrie.Node node, int i) {
 		ArrayList<String> output = new ArrayList<String>();
 		if (i >= input.length()) {
@@ -246,6 +273,7 @@ public class Solution {
 			}
 			return output;
 		}
+
 		String chars = numToCharsMap.get(input.charAt(i));
 		for (char firstChar: chars.toCharArray()) {
 			WordTrie.Node subNode = node.get(firstChar);
@@ -256,5 +284,14 @@ public class Solution {
 			}
 		}
 		return output;
+	}
+	
+	private static boolean validateInput(String input) {
+		for (int i=0; i<input.length(); i++) {
+			if (input.charAt(i)=='0' || input.charAt(i)=='1') {
+				return false;
+			}
+		}
+		return true;
 	}
 }
