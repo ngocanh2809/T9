@@ -1,10 +1,15 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Solution {
 	private static final int[] CHAR_TO_KEY_TABLE = buildCharToKeyTable("abcdefghijklmnopqrstuvwxyz0123456789");
 	private static final int[] CHAR_TO_NUMKEYPRESS_TABLE = buildCharToNumkeypressTable("abcdefghijklmnopqrstuvwxyz0123456789");
 	private static final HashMap<Character,String> numToCharsMap = buildNumToCharsMap();
-
+	private static final String DICT_FILENAME = "words.txt";
+	private static final WordTrie dictionary = WordTrie.buildDict(DICT_FILENAME);
+	
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		int qtnNumber = Integer.MAX_VALUE;
@@ -38,7 +43,7 @@ public class Solution {
 			case 4:
 				System.out.print("Please enter a number: ");
 				input = sc.next();
-				//question4(input);
+				question4(input);
 				break;
 			case 0:
 				exit = true;
@@ -50,7 +55,7 @@ public class Solution {
 		} while (!exit);
 		sc.close();
 	}
-
+	
 	//Param: a word
 	//Return: total number of key presses to spell the word
 	public static void question1(String input) {
@@ -170,7 +175,7 @@ public class Solution {
 	    }
 	    return -1;
 	}
-
+	
 	//Param: a number
 	//Return: all possible letter combinations the number could represent
 	public static void question3(String input) {
@@ -221,4 +226,35 @@ public class Solution {
 		return map;
 	}
 	
+	//Param: a number
+	//Return: all possible word combinations from Dictionary that the number could represent
+	public static void question4(String input) {
+		ArrayList<String> output = getMatches(input, dictionary);
+		output = getListDoubleQuotes(output);
+		System.out.println(output.toString());
+	}
+	
+	private static ArrayList<String> getMatches(String input, WordTrie trie) {
+		return getMatchesHelper(input, trie.root, 0);
+	}
+	
+	private static ArrayList<String> getMatchesHelper(String input, WordTrie.Node node, int i) {
+		ArrayList<String> output = new ArrayList<String>();
+		if (i >= input.length()) {
+			if (node.isWord) {
+				output.add("");
+			}
+			return output;
+		}
+		String chars = numToCharsMap.get(input.charAt(i));
+		for (char firstChar: chars.toCharArray()) {
+			WordTrie.Node subNode = node.get(firstChar);
+			if (subNode != null) {
+				ArrayList<String> suffixes = getMatchesHelper(input, subNode, i + 1);
+				for (String suffix : suffixes)
+					output.add("" + firstChar + suffix);
+			}
+		}
+		return output;
+	}
 }
