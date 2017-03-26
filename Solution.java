@@ -3,6 +3,7 @@ import java.util.*;
 public class Solution {
 	private static final int[] CHAR_TO_KEY_TABLE = buildCharToKeyTable("abcdefghijklmnopqrstuvwxyz0123456789");
 	private static final int[] CHAR_TO_NUMKEYPRESS_TABLE = buildCharToNumkeypressTable("abcdefghijklmnopqrstuvwxyz0123456789");
+	private static final HashMap<Character,String> numToCharsMap = buildNumToCharsMap();
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -32,7 +33,7 @@ public class Solution {
 			case 3:
 				System.out.print("Please enter a number: ");
 				input = sc.next();
-				//question3(input);
+				question3(input);
 				break;
 			case 4:
 				System.out.print("Please enter a number: ");
@@ -169,4 +170,55 @@ public class Solution {
 	    }
 	    return -1;
 	}
+
+	//Param: a number
+	//Return: all possible letter combinations the number could represent
+	public static void question3(String input) {
+		ArrayList<String> output = new ArrayList<String>();
+		output.add("");
+		
+		for (int i = 0; i < input.length(); i++) {
+			if (input.charAt(i)=='0' || input.charAt(i)=='1') {
+				continue;
+			}
+			String chars = numToCharsMap.get(input.charAt(i));
+			for (int j = output.size(); j > 0; j--) {
+				String tempOutput = output.get(0);
+				output.remove(0); 
+				for (int k = 0; k < chars.length(); k++) {
+	                output.add(tempOutput + chars.charAt(k)); 
+	            }
+			}
+		}
+		
+		output = getListDoubleQuotes(output);
+		System.out.println(output.toString());
+	}
+	
+	private static ArrayList<String> getListDoubleQuotes(ArrayList<String> list) {
+		ArrayList<String> newList = new ArrayList<String>();
+		
+		for(String str : list) {
+			StringBuilder builder = new StringBuilder();
+			builder.append("\"");
+			builder.append(str);
+			builder.append("\"");
+			newList.add(builder.toString());
+		}
+		return newList;	
+	}
+	
+	private static HashMap<Character, String> buildNumToCharsMap() {
+		HashMap<Character,String> map = new HashMap<Character,String>();
+		map.put('2',"abc");
+		map.put('3',"def");
+		map.put('4',"ghi");
+		map.put('5',"jkl");
+		map.put('6',"mno");
+		map.put('7',"pqrs");
+		map.put('8',"tuv");
+		map.put('9',"wxyz");
+		return map;
+	}
+	
 }
