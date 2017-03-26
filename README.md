@@ -27,5 +27,5 @@ java Solution
 # Implementation
 1. Parts 1 & 2 are implemented by first building a lookup table at the start of the program. The use of the lookup table makes it fast to get the corresponding key/number of presses for each character in the input string.
 Inputs are case-insensitive.
-2. Parts 3 & 4 use HashMap to store the characters corresponding to each key in the keypad.
+2. In parts 3 & 4, HashMap is used to store the characters corresponding to each key in the keypad.
 3. Part 4 is implemented using a trie data structure to store the dictionary. This is done at the start of the program. Trie is used as it is suitable for dictionary representation and word lookup.
